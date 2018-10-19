@@ -6,6 +6,7 @@ Created on Sun Oct 14 18:14:30 2018
 @author: jay
 """
 
+import pyphen
 import nltk
 from nltk.corpus import sentiwordnet, wordnet
 
