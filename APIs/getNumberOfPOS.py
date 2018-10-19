@@ -12,36 +12,45 @@ import nltk.tokenize
 from collections import Counter
 from nltk.corpus import brown
 
+from nltk.tag import brill
 #take in a corpera, tokenize, pos tag and then return json list of pos and count
 
 
 
 def getNumberOfPOS(corpera):
-    lemmatizer = WordNetLemmatizer()
-       
-    brown_tagged_sents = brown.tagged_sents()
+    #Initialise Variables
     
+    #Tokenize corpera
+    tokened = nltk.tokenize.word_tokenize(corpera)
+    
+    #Lemmatize Text
+    lemmatizer = WordNetLemmatizer()   
+    lemmatized = [lemmatizer.lemmatize(i) for i in tokened]
+        
+    #POS tag tokenized text
     #Can filter by catergory
     #brown_tagged_sents = brown.tagged_sents(categories='news')
     
     #build trigram tagger
+    brown_tagged_sents = brown.tagged_sents()
     trigram_tagger = nltk.TrigramTagger(brown_tagged_sents) 
-    
-    tokened = nltk.tokenize.word_tokenize(corpera)
-    
-    lemmatized = [lemmatizer.lemmatize(i) for i in tokened]
-    
+    brill.BrillTagger.tag(lemmatized)
     tagged = trigram_tagger.tag(lemmatized)
     
+    #Workout the number of POS tags in the corpera
     counts = Counter(tag for word,tag in tagged)
 
     return counts
 
 
 def getNormalisedNumberOfPOS(corpera):
+    #POS tag the Corpera
     counts = getNumberOfPOS(corpera)
+    
+    #Get the normalised value (proportion) of POS tags
     total = sum(counts.values())
     result = dict((word, float(count)/total) for word,count in counts.items())
+    
     return result
 
 
